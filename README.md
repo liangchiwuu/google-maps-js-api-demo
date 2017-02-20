@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is an HTML file which demonstrates the following Google Maps JavaScript APIs:
+This is a simple website that demonstrates the following Google Maps JavaScript APIs:
 
 1. Google Simple Polyline
 2. Google Shortest Path
@@ -23,3 +23,7 @@ This HTML will check if the latitude is between +90 and -90; and also if the lon
 ## The University of Arizona
 
 This HTML will put an "A" logo at the University of Arizona when loaded. Click the marker will give you more information about this school.
+
+## License
+
+GNU General Public License 3.0
