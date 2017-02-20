@@ -23,7 +23,3 @@ This HTML will check if the latitude is between +90 and -90; and also if the lon
 ## The University of Arizona
 
 This HTML will put an "A" logo at the University of Arizona when loaded. Click the marker will give you more information about this school.
-
-
-
-A demo of Google Maps JavaScript API.
