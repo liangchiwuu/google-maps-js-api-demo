@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>Google Maps JavaScript API Demo</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      body, input {
+        font-size: 9pt;
+        font-family: 'Verdana', 'sans-serif';
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      header, footer, .center {
+        text-align: center;
+      }
+      #positionsInput table {
+        margin: 0 auto;
+      }
+      #mapCanvas {
+        text-align: justify;
+        margin: 0 auto;
+        border: 1px solid #000000;
+        height: 400px;
+        width: 700px;
+      }
+    </style>
+  </head>
+  <body>
+    <header role="banner">
+      <h1>Google Maps JavaScript API Demo</h1>
+    </header>
+
+    <div id="functionSelect" class="center">
+      <form name="functionSwitch" id="functionSwitch">
+        <b>Select a function: </b>
+        <select name="mapFunction" id="mapFunction">
+          <option value="simplePolyline">Simple Polyline</option>
+          <option value="shortestPath">Shortest Path</option>
+          <option value="heatmap">Heatmap</option>
+        </select>
+      </form>
+    </div><br />
+
+    <div id="positionsInput">
+      <table>
+        <tr><th></th><th scope="col">Latitude</th><th scope="col">Longitude</th></tr>
+        <!-- Start Position -->
+        <tr>
+          <th scope="row">Start Position</th>
+          <td><input type="text" id="startLatitude" value="32.2319" /></td>
+          <td><input type="text" id="startLongitude" value="-110.9534" /></td>
+        </tr>
+        <!-- End Position -->
+        <tr>
+          <th scope="row">End Position</th>
+          <td><input type="text" id="endLatitude" value="40.7589" /></td>
+          <td><input type="text" id="endLongitude" value="-73.9851" /></td>
+        </tr>
+      </table>
+    </div><br />
+
+    <div id="operationPanel" class="center">
+      <button type="button" onclick="updateMap()">Draw</button>
+      <button type="button" onclick="clearMap()">Clear</button>
+    </div><br />
+
+    <div id="mapContainer" class="center">
+      <div id="mapCanvas"></div>
+    </div>
+
+    <script>
+    // global variables for map and functions
+    var map;
+    var flightPath;
+    var directionsDisplay;
+    var heatmap;
+
+      function initMap() {
+        // initial map will center at the U of Arizona
+        var uOfArizona = {lat: 32.2319, lng: -110.9534};
+        var mapOptions = {center: uOfArizona, zoom: 13};
+        map = new google.maps.Map(document.getElementById("mapCanvas"), mapOptions);
+
+        // marker icon
+        var image = 'http://i.imgur.com/DOa6Pre.png';
+
+        // add a marker at the U of A, click it will show the info
+        var marker = new google.maps.Marker({
+          position: uOfArizona,
+          map: map,
+          title: 'The University of Arizona',
+          animation: google.maps.Animation.DROP,
+          icon: image
+        });
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
+
+        // define the info of the U of Arizona
+        var contentString = '<div id="content">'+
+          '<h1 id="firstHeading" class="firstHeading">The University of Arizona</h1>'+
+          '<div id="bodyContent">'+
+          '<p>The <b>University of Arizona</b> (also referred '+
+          'to as <b>U of A</b>, <b>UA</b>, or <b>Arizona</b>) '+
+          'is a public research university located in Tucson, '+
+          'Arizona, United States. Founded in 1885, UA was the '+
+          'first university in the Arizona Territory. The university '+
+          'includes the Banner – University Medical Center Tucson, '+
+          'which operates a separate 4-year M.D. college in downtown '+
+          'Phoenix.</p><p>The University of Arizona is governed '+
+          'by the Arizona Board of Regents. The mission of the '+
+          'University of Arizona is, "To improve the prospects '+
+          'and enrich the lives of the people of Arizona and the '+
+          'world through education, research, creative expression, '+
+          'and community and business partnerships."</p>'+
+          '<p>Attribution: The University of Arizona, '+
+          '<a href="https://en.wikipedia.org/wiki/University_of_Arizona">'+
+          'https://en.wikipedia.org/wiki/University_of_Arizona</a></p>'+
+          '</div>'+
+          '</div>';
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString,
+        });
+      }
+
+      function updateMap() {
+        // generate startPosition & endPosition
+        var startLatitude = parseFloat(document.getElementById("startLatitude").value);
+        var startLongitude = parseFloat(document.getElementById("startLongitude").value);
+        var endLatitude = parseFloat(document.getElementById("endLatitude").value);
+        var endLongitude = parseFloat(document.getElementById("endLongitude").value);
+        var startPosition = new google.maps.LatLng(startLatitude, startLongitude);
+        var endPosition = new google.maps.LatLng(endLatitude, endLongitude);
+
+        // check startPosition & endPosition boundary
+        if (startLatitude > 90 || startLatitude < -90 ||
+            endLatitude > 90 || endLatitude < -90) {
+          alert("Error: latitude should be between -90 and +90");
+          return;
+        } else if (startLongitude > 180 || startLongitude < -180 ||
+            endLongitude > 180 || endLongitude < -180) {
+          alert("Error: longitude should be between -180 and +180");
+          return;
+        }
+
+        // set map bounds and scale
+        var bounds = new google.maps.LatLngBounds();
+        bounds.extend(startPosition);
+        bounds.extend(endPosition);
+        map.fitBounds(bounds);
+        map.panToBounds(bounds);  
+
+        //  get the chosen function from select then apply
+        var form = document.getElementById("functionSwitch");
+        var functionChosen = form.mapFunction.value;
+        clearMap();
+        switch(functionChosen) {
+          case "simplePolyline":
+            drawSimplePolyline(startPosition, endPosition);
+            break;
+          case "shortestPath":
+            drawShortestPath(startPosition, endPosition);
+            break;
+          case "heatmap":
+            drawHeatmap(startPosition, endPosition);
+            break;
+        }
+      }
+
+      function drawSimplePolyline(startPosition, endPosition) {
+        // draw polyline
+        var flightPlanCoordinates = [startPosition, endPosition];
+        flightPath = new google.maps.Polyline({
+          path: flightPlanCoordinates,
+          geodesic: true,
+          strokeColor: "#FF0000",
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        flightPath.setMap(map);
+      }
+
+      function drawShortestPath(startPosition, endPosition) {
+        // set directions display
+        directionsDisplay = new google.maps.DirectionsRenderer;
+        directionsDisplay.setMap(map);
+
+        // calculate and display route
+        var directionsService = new google.maps.DirectionsService;
+        directionsService.route({
+          origin: startPosition,
+          destination: endPosition,
+          travelMode: google.maps.TravelMode.DRIVING
+        }, function(response, status) {
+          if (status === google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+      }
+
+      function drawHeatmap(startPosition, endPosition) {
+        // generate random heatmap data
+        var numberOfPoints = 100;
+        var heatmapPoints = new Array();
+        for(var i = 0; i < numberOfPoints; i++) {
+          heatmapPoints.push(new google.maps.LatLng(
+            parseFloat(startPosition.lat()) + (parseFloat(endPosition.lat())
+                - parseFloat(startPosition.lat())) * Math.random(),
+            parseFloat(startPosition.lng()) + (parseFloat(endPosition.lng())
+                - parseFloat(startPosition.lng())) * Math.random()
+          ));
+        }
+
+        // set heatmap
+        heatmap = new google.maps.visualization.HeatmapLayer({
+          data: heatmapPoints,
+          map: map
+        });
+      }
+
+      function clearMap() {
+        // if polyline/route/heatmap exists, clear it
+        if (flightPath) {
+          flightPath.setMap(null);
+        }
+        if (directionsDisplay) {
+          directionsDisplay.setMap(null);
+        }
+        if (heatmap) {
+          heatmap.setMap(null);
+        }
+      }
+    </script>
+
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?libraries=visualization&callback=initMap&key=">
+    </script>
+
+    <footer role="contentinfo">
+      <p><small>Google Maps JavaScript API demo by Liang-Chi Wuu.</small></p>
+    </footer>
+  </body>
+</html>
+
