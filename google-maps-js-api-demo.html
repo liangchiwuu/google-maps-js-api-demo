@@ -43,9 +43,9 @@
     <form id="functionSwitch">
         <b>API: </b>
         <select name="mapFunction" id="mapFunction">
-            <option value="simplePolyline">Simple Polyline</option>
-            <option value="shortestPath">Shortest Path</option>
-            <option value="heatmap">Heatmap</option>
+            <option value="simplePolylines">Simple Polylines</option>
+            <option value="directionsService">Directions Service</option>
+            <option value="heatmaps">Heatmaps</option>
         </select>
     </form>
 </div>
@@ -173,18 +173,18 @@
         map.fitBounds(bounds);
         map.panToBounds(bounds);
 
-        //  get the chosen function from select then apply
+        //  get the selected api from select then apply
         var form = document.getElementById("functionSwitch");
-        var functionChosen = form.mapFunction.value;
+        var apiSelected = form.mapFunction.value;
         clearMap();
-        switch (functionChosen) {
-            case "simplePolyline":
+        switch (apiSelected) {
+            case "simplePolylines":
                 drawSimplePolyline(origin, destination);
                 break;
-            case "shortestPath":
-                drawShortestPath(origin, destination);
+            case "directionsService":
+                drawDirectionsService(origin, destination);
                 break;
-            case "heatmap":
+            case "heatmaps":
                 drawHeatmap(origin, destination);
                 break;
         }
@@ -203,7 +203,7 @@
         flightPath.setMap(map);
     }
 
-    function drawShortestPath(startPosition, endPosition) {
+    function drawDirectionsService(startPosition, endPosition) {
         // set directions display
         directionsDisplay = new google.maps.DirectionsRenderer;
         directionsDisplay.setMap(map);
@@ -244,7 +244,6 @@
     }
 
     function clearMap() {
-        // if polyline/route/heatmap exists, clear it
         if (flightPath) {
             flightPath.setMap(null);
         }
@@ -307,7 +306,7 @@
 
 <footer role="contentinfo">
     <p>
-        <small>Google Maps JavaScript API V3 demo by Liang-Chi Wuu.</small>
+        <small>Google Maps JavaScript API V3 demo by LCW.</small>
     </p>
 </footer>
 </body>
