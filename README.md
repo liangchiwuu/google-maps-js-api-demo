@@ -1,29 +1,25 @@
-# google-maps-js-api-demo
+# Google Maps JavaScript API V3 Demo
+
+[![License](https://img.shields.io/badge/license-GPL%203.0-brightgreen.svg)](./LICENSE)
+![Language](https://img.shields.io/badge/language-JavaScript-orange.svg)
+
+A lightweight demonstration of Google Maps JavaScript API V3.
 
 ## Overview
 
-This is a simple website that demonstrates the following Google Maps JavaScript APIs:
+This is a webpage to demonstrate the following Google Maps JavaScript APIs:
 
-1. Google Simple Polyline
-2. Google Shortest Path
-3. Google Heatmap
+* [Simple Polylines](https://developers.google.com/maps/documentation/javascript/examples/polyline-simple)
+* [Directions Service](https://developers.google.com/maps/documentation/javascript/examples/directions-simple)
+* [Heatmaps](https://developers.google.com/maps/documentation/javascript/examples/layer-heatmap)
 
-To demonstrate the corresponding function, simply select the function at the top, enter the latitude/longitude value for Start/End Position (or use default), then click "Draw" button. You can always clear the map by click "Clear" button.
+## Usage
 
-* For the Simple Polyline function, this HTML will draw a simple polyline from Start Position to End Position user entered.
-* For the Shortest Path function, this HTML will give a shortest route from Start Position to End Position user entered.
-* For the Heatmap function, this HTML will randomly generate 100 coordinates in a square limited by the Start Position & End Position user entered.
-
-The boundary and scale of the map will be automatically adjusted based on Start/End Position.
-
-## Boundary Check
-
-This HTML will check if the latitude is between +90 and -90; and also if the longitude is between +180 and -180. If the input data goes out of bounds, an error message will pop out to prompt user the correct range. 
-
-## The University of Arizona
-
-This HTML will put an "A" logo at the University of Arizona when loaded. Click the marker will give you more information about this school.
-
-## License
-
-GNU General Public License 3.0
+1. Open `google-maps-js-api-demo.html` in the browser directly.
+2. Right-click on the map to set origin/destination or manually input them.
+3. Select the corresponding API then click "Draw." Use "Clear" button to clear the map at any time.
+    * For Simple Polylines API: draw a simple polyline from origin to destination.
+    * For Directions Service API: give a shortest route from origin to destination.
+    * For Heatmaps API: randomly generate 100 coordinates in a rectangle between origin and destination.
+4. The boundary and scale of the map will be adjusted automatically.
+5. You can also click the "A" logo to learn about the University of Arizona.
