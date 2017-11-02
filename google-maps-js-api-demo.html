@@ -83,11 +83,13 @@
 </div>
 
 <script>
-    // global variables for map and functions
     var map;
     var flightPath;
     var directionsDisplay;
     var heatmap;
+    var rightclickMenu;
+    var originMarker
+    var destinationMarker;
 
     function initMap() {
         // initial map will center at the U of Arizona
@@ -135,16 +137,23 @@
         var infowindow = new google.maps.InfoWindow({
             content: contentString,
         });
+
+        // add rightclick listener to map
+        google.maps.event.addListener(
+            map, "rightclick", function (e) {
+                display_rightclickmenu(e);
+            }
+        );
     }
 
     function updateMap() {
-        // generate startPosition & endPosition
+        // parse origin & destination
         var startLatitude = parseFloat(document.getElementById("startLatitude").value);
         var startLongitude = parseFloat(document.getElementById("startLongitude").value);
         var endLatitude = parseFloat(document.getElementById("endLatitude").value);
         var endLongitude = parseFloat(document.getElementById("endLongitude").value);
-        var startPosition = new google.maps.LatLng(startLatitude, startLongitude);
-        var endPosition = new google.maps.LatLng(endLatitude, endLongitude);
+        var origin = new google.maps.LatLng(startLatitude, startLongitude);
+        var destination = new google.maps.LatLng(endLatitude, endLongitude);
 
         // check startPosition & endPosition boundary
         if (startLatitude > 90 || startLatitude < -90 ||
@@ -159,8 +168,8 @@
 
         // set map bounds and scale
         var bounds = new google.maps.LatLngBounds();
-        bounds.extend(startPosition);
-        bounds.extend(endPosition);
+        bounds.extend(origin);
+        bounds.extend(destination);
         map.fitBounds(bounds);
         map.panToBounds(bounds);
 
@@ -170,13 +179,13 @@
         clearMap();
         switch (functionChosen) {
             case "simplePolyline":
-                drawSimplePolyline(startPosition, endPosition);
+                drawSimplePolyline(origin, destination);
                 break;
             case "shortestPath":
-                drawShortestPath(startPosition, endPosition);
+                drawShortestPath(origin, destination);
                 break;
             case "heatmap":
-                drawHeatmap(startPosition, endPosition);
+                drawHeatmap(origin, destination);
                 break;
         }
     }
@@ -245,6 +254,50 @@
         if (heatmap) {
             heatmap.setMap(null);
         }
+    }
+
+    function display_rightclickmenu(event) {
+        if (rightclickMenu) {
+            rightclickMenu.close();
+        }
+        rightclickMenu = new google.maps.InfoWindow({
+            content: "<table>"
+            + "<tr><td><button style='width: 100%;' onclick='setOrigin()'>Directions from here</button></tr>"
+            + "<tr><td><button style='width: 100%;' onclick='setDestination()'>Directions to here</button></tr>"
+            + "</table>",
+            position: event.latLng
+        });
+        rightclickMenu.open(map);
+    }
+
+    function setOrigin() {
+        if (originMarker) {
+            originMarker.setMap(null);
+        }
+        originMarker = new google.maps.Marker({
+            position: rightclickMenu.getPosition(),
+            animation: google.maps.Animation.DROP,
+            map: map,
+            title: "Origin"
+        });
+        document.getElementById("startLatitude").value = rightclickMenu.getPosition().lat().toFixed(4);
+        document.getElementById("startLongitude").value = rightclickMenu.getPosition().lng().toFixed(4);
+        rightclickMenu.close();
+    }
+
+    function setDestination() {
+        if (destinationMarker) {
+            destinationMarker.setMap(null);
+        }
+        destinationMarker = new google.maps.Marker({
+            position: rightclickMenu.getPosition(),
+            animation: google.maps.Animation.DROP,
+            map: map,
+            title: "Destination"
+        });
+        document.getElementById("endLatitude").value = rightclickMenu.getPosition().lat().toFixed(4);
+        document.getElementById("endLongitude").value = rightclickMenu.getPosition().lng().toFixed(4);
+        rightclickMenu.close();
     }
 </script>
 
