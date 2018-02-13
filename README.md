@@ -9,17 +9,24 @@ A lightweight demonstration of Google Maps JavaScript API V3.
 
 This is a webpage to demonstrate the following Google Maps JavaScript APIs:
 
-* [Simple Polylines](https://developers.google.com/maps/documentation/javascript/examples/polyline-simple)
-* [Directions Service](https://developers.google.com/maps/documentation/javascript/examples/directions-simple)
-* [Heatmaps](https://developers.google.com/maps/documentation/javascript/examples/layer-heatmap)
+* [Simple polylines  |  Google Maps JavaScript API  |  Google Developers](https://developers.google.com/maps/documentation/javascript/examples/polyline-simple)
+* [Directions service  |  Google Maps JavaScript API  |  Google Developers](https://developers.google.com/maps/documentation/javascript/examples/directions-simple)
+* [Heatmaps  |  Google Maps JavaScript API  |  Google Developers](https://developers.google.com/maps/documentation/javascript/examples/layer-heatmap)
 
 ## Usage
 
-1. Open `google-maps-js-api-demo.html` in the browser directly.
-2. Right-click on the map to set origin/destination or manually input them.
-3. Select the corresponding API then click "Draw." Use "Clear" button to clear the map at any time.
-    * For Simple Polylines API: draw a simple polyline from origin to destination.
-    * For Directions Service API: give a shortest route from origin to destination.
-    * For Heatmaps API: randomly generate 100 coordinates in a rectangle between origin and destination.
-4. The boundary and scale of the map will be adjusted automatically.
+1. Open `google-maps-js-api-demo.html` in the browser directly, right-click on the map to set origin/destination.
+2. Select the corresponding API then click `Draw` to update map.
+3. Use "Clear" button to clear the map.
+4. The boundary and the scale of the map will be adjusted automatically.
 5. You can also click the "A" logo to learn about the University of Arizona.
+
+## Examples
+
+|Simple polylines|Directions service|
+|:---:|:---:|
+|![Snapshot](./examples/polyline-simple.png)|![Snapshot](./examples/directions-simple.png)|
+
+|Heatmaps|Info windows|
+|:---:|:---:|
+|![Snapshot](./examples/layer-heatmap.png)|![Snapshot](./examples/university-of-arizona.png)|
